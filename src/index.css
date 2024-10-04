@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --accent-color: #6366f1;
+  --accent-color-dark: #4f46e5;
+}
+
+.text-accent-color {
+  color: var(--accent-color);
+}
+
+.bg-accent-color {
+  background-color: var(--accent-color);
+}
+
+.hover\:bg-accent-color-dark:hover {
+  background-color: var(--accent-color-dark);
+}
+
+.focus\:ring-accent-color:focus {
+  --tw-ring-color: var(--accent-color);
+}
+
+@layer base {
+  body {
+    @apply transition-colors duration-200;
+  }
+}
