@@ -7,11 +7,11 @@ import ThemeToggle from "./ThemeToggle";
 export default function Navbar() {
   const { user, signIn, signOut } = useAuth();
   return (
-    <div className="navbar bg-base-100">
+    <div className="navbar bg-base-300">
       <div className="navbar-start">
         <Link to="/" className="btn btn-ghost">
-          <div className="text-primary flex items-center space-x-2">
-            <Package className="h-8 w-8 text-accent-color" />
+          <div className="flex items-center space-x-2 text-primary">
+            <Package className="text-accent-color h-8 w-8" />
             <h1 className="text-3xl font-bold">Binventory</h1>
           </div>
         </Link>
@@ -43,7 +43,7 @@ export default function Navbar() {
               </div>
               <ul
                 tabIndex={0}
-                className="menu dropdown-content bg-base-100 rounded-box z-[1] mt-4 w-52 justify-start p-2 shadow"
+                className="menu dropdown-content z-[1] mt-4 w-52 justify-start rounded-box bg-base-100 p-2 shadow"
               >
                 <li>
                   <ThemeToggle />

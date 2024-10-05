@@ -2,6 +2,7 @@ import { getDownloadURL, ref } from "firebase/storage";
 import { useEffect, useState } from "react";
 import { storage } from "../firebase";
 import { FileImage } from "lucide-react";
+import { clsx } from "clsx";
 
 interface IImageProps {
   imagePath?: string;
@@ -21,8 +22,12 @@ export default function Image({ imagePath, alt, className }: IImageProps) {
     })();
   }, [imagePath, setImage]);
 
-  if (!image) {
+  if (!imagePath) {
     return <FileImage className={className} />;
+  }
+
+  if (!image) {
+    <div className={clsx("skeleton", "h-full", "w-full", className)}></div>;
   }
 
   return <img src={image} alt={alt} className={className} />;

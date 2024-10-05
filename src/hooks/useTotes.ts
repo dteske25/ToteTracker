@@ -43,13 +43,34 @@ export const useTotes = () => {
   return { totes };
 };
 
+export const useTote = (toteId: string | undefined) => {
+  const [tote, setTote] = useState<Tote>();
+  const { user } = useAuth();
+
+  useEffect(() => {
+    if (!user || !toteId) {
+      setTote(undefined);
+      return;
+    }
+
+    const toteRef = doc(db, "totes", toteId);
+    const unsubscribe = onSnapshot(toteRef, (doc) => {
+      setTote({ id: doc.id, ...doc.data() } as Tote);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
+
+  return { tote };
+};
+
 export const useToteActions = () => {
   const { user } = useAuth();
 
   const addTote = useCallback(
     async (
       tote: Omit<Tote, "id" | "images" | "userId">,
-      images: FileList | null
+      coverImage: File | null,
     ) => {
       if (!user) return;
 
@@ -58,20 +79,27 @@ export const useToteActions = () => {
         userId: user.uid,
       });
 
-      if (images !== null) {
-        const imagePromises: Promise<any>[] = [];
-        for (const image of images) {
-          imagePromises.push(addImageToTote(user, result.id, image));
-        }
-        await Promise.all(imagePromises);
+      if (coverImage !== null) {
+        await addImageToTote(result.id, coverImage, true);
       }
+
+      return result.id;
     },
-    [user]
+    [user],
   );
 
-  const addImageToTote = async (user: User, toteId: string, image: File) => {
+  const addImageToTote = async (
+    toteId: string,
+    image: File,
+    coverImage: boolean = false,
+  ) => {
     const { tote, ref } = await internal_getTote(toteId);
     const path = await internal_addToteImage(user, image);
+    if (coverImage) {
+      await updateDoc(ref, {
+        coverImage: path,
+      });
+    }
     await updateDoc(ref, {
       images: [...(tote.images ?? []), path],
     });
@@ -94,6 +122,22 @@ export const useToteActions = () => {
     await internal_removeToteImage(imagePath);
   };
 
+  const setAsCoverImage = async (toteId: string, imagePath: string) => {
+    const { ref } = await internal_getTote(toteId);
+    await updateDoc(ref, {
+      coverImage: imagePath,
+    });
+  };
+
+  const updateToteInfo = async (newTote: Tote) => {
+    const { ref } = await internal_getTote(newTote.id);
+    await updateDoc(ref, {
+      name: newTote.name,
+      contents: newTote.contents,
+      coverImage: newTote.coverImage,
+    });
+  };
+
   const internal_getTote = async (toteId: string) => {
     const toteRef = doc(db, "totes", toteId);
     const toteDoc = await getDoc(toteRef);
@@ -103,7 +147,10 @@ export const useToteActions = () => {
     };
   };
 
-  const internal_addToteImage = async (user: User, image: File) => {
+  const internal_addToteImage = async (user: User | null, image: File) => {
+    if (user === null) {
+      return;
+    }
     if (image) {
       const imageId = uuid();
       const extension = image.name.split(".").pop();
@@ -120,8 +167,10 @@ export const useToteActions = () => {
 
   return {
     addTote,
+    updateToteInfo,
     deleteTote,
     addImageToTote,
+    setAsCoverImage,
     removeImageFromTote,
   };
 };
