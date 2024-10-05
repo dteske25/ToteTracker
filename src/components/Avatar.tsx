@@ -1,4 +1,8 @@
-export default function Avatar(props: { name?: string; image?: string }) {
+export default function Avatar(props: {
+  name?: string;
+  image?: string;
+  className?: string;
+}) {
   const { name, image } = props;
 
   let content;
@@ -9,14 +13,12 @@ export default function Avatar(props: { name?: string; image?: string }) {
       .split(" ")
       .map((s) => s.slice(0, 1).toUpperCase())
       .join("");
-    content = <span className='text-xs'>{initials}</span>;
+    content = <span className="text-xs">{initials}</span>;
   }
 
   return (
-    <div className=''>
-      <div className='bg-neutral text-neutral-content w-12 rounded-full'>
-        {content}
-      </div>
+    <div className="avatar">
+      <div className="w-12 rounded-full">{content}</div>
     </div>
   );
 }

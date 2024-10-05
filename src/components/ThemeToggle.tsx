@@ -1,18 +1,19 @@
-import React from 'react';
-import { Sun, Moon } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
+import React from "react";
+import { Sun, Moon } from "lucide-react";
+import { useTheme } from "../context/ThemeContext";
 
 const ThemeToggle: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   return (
-    <button
+    <a
       onClick={toggleTheme}
-      className="p-2 rounded-full bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+      className="theme-controller"
       aria-label="Toggle theme"
     >
-      {theme === 'light' ? <Moon size={20} /> : <Sun size={20} />}
-    </button>
+      {theme === "light" ? <Moon size={12} /> : <Sun size={12} />}
+      {theme === "light" ? "Dark" : "Light"} Mode
+    </a>
   );
 };
 

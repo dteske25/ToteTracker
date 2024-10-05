@@ -4,7 +4,7 @@ import { storage } from "../firebase";
 import { FileImage } from "lucide-react";
 
 interface IImageProps {
-  imagePath: string;
+  imagePath?: string;
   alt: string;
   className?: string;
 }
@@ -14,8 +14,10 @@ export default function Image({ imagePath, alt, className }: IImageProps) {
 
   useEffect(() => {
     (async () => {
-      const downloadUrl = await getDownloadURL(ref(storage, imagePath));
-      setImage(downloadUrl);
+      if (imagePath) {
+        const downloadUrl = await getDownloadURL(ref(storage, imagePath));
+        setImage(downloadUrl);
+      }
     })();
   }, [imagePath, setImage]);
 

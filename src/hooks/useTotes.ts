@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   collection,
   addDoc,
@@ -15,6 +15,7 @@ import { db, storage } from "../firebase";
 import { Tote } from "../types";
 import { useAuth } from "../context/AuthContext";
 import { v4 as uuid } from "uuid";
+import { User } from "firebase/auth";
 
 export const useTotes = () => {
   const [totes, setTotes] = useState<Tote[]>([]);
@@ -39,45 +40,56 @@ export const useTotes = () => {
     return () => unsubscribe();
   }, [user]);
 
-  const addTote = async (
-    tote: Omit<Tote, "id" | "images" | "userId">,
-    images: FileList | null
-  ) => {
-    if (!user) return;
+  return { totes };
+};
 
-    const result = await addDoc(collection(db, "totes"), {
-      ...tote,
-      userId: user.uid,
-    });
+export const useToteActions = () => {
+  const { user } = useAuth();
 
-    if (images !== null) {
-      for (const image of images) {
-        await addImageToTote(result.id, image);
+  const addTote = useCallback(
+    async (
+      tote: Omit<Tote, "id" | "images" | "userId">,
+      images: FileList | null
+    ) => {
+      if (!user) return;
+
+      const result = await addDoc(collection(db, "totes"), {
+        ...tote,
+        userId: user.uid,
+      });
+
+      if (images !== null) {
+        const imagePromises: Promise<any>[] = [];
+        for (const image of images) {
+          imagePromises.push(addImageToTote(user, result.id, image));
+        }
+        await Promise.all(imagePromises);
       }
-    }
+    },
+    [user]
+  );
+
+  const addImageToTote = async (user: User, toteId: string, image: File) => {
+    const { tote, ref } = await internal_getTote(toteId);
+    const path = await internal_addToteImage(user, image);
+    await updateDoc(ref, {
+      images: [...(tote.images ?? []), path],
+    });
   };
 
   const deleteTote = async (id: string) => {
-    if (!user) return;
     const toteRef = doc(db, "totes", id);
     const tote = (await getDoc(toteRef)).data() as Tote;
-    const imageDelete = tote.images.map((i) => internal_removeToteImage(i));
+    const imageDelete =
+      tote.images?.map((i) => internal_removeToteImage(i)) ?? [];
     await Promise.all(imageDelete);
     await deleteDoc(toteRef);
-  };
-
-  const addImageToTote = async (toteId: string, image: File) => {
-    const { tote, ref } = await internal_getTote(toteId);
-    const path = await internal_addToteImage(image);
-    await updateDoc(ref, {
-      images: [...tote.images, path],
-    });
   };
 
   const removeImageFromTote = async (toteId: string, imagePath: string) => {
     const { tote, ref } = await internal_getTote(toteId);
     await updateDoc(ref, {
-      images: tote.images.filter((i) => i !== imagePath),
+      images: tote.images?.filter((i) => i !== imagePath),
     });
     await internal_removeToteImage(imagePath);
   };
@@ -91,9 +103,7 @@ export const useTotes = () => {
     };
   };
 
-  const internal_addToteImage = async (image: File) => {
-    if (!user) return;
-
+  const internal_addToteImage = async (user: User, image: File) => {
     if (image) {
       const imageId = uuid();
       const extension = image.name.split(".").pop();
@@ -108,5 +118,10 @@ export const useTotes = () => {
     await deleteObject(ref(storage, imagePath));
   };
 
-  return { totes, addTote, deleteTote, addImageToTote, removeImageFromTote };
+  return {
+    addTote,
+    deleteTote,
+    addImageToTote,
+    removeImageFromTote,
+  };
 };

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
-import { useTotes } from "../hooks/useTotes";
+import { useToteActions } from "../hooks/useTotes";
 
 interface ToteFormProps {}
 
@@ -10,7 +10,7 @@ const ToteForm: React.FC<ToteFormProps> = () => {
   const [contents, setContents] = useState("");
   const [images, setImages] = useState<FileList | null>(null);
   const navigate = useNavigate();
-  const { addTote } = useTotes();
+  const { addTote } = useToteActions();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,70 +27,69 @@ const ToteForm: React.FC<ToteFormProps> = () => {
   };
 
   return (
-    <div className='max-w-md mx-auto'>
+    <div className="mx-auto max-w-md">
       <Link
-        to='/'
-        className='flex items-center text-blue-500 hover:text-blue-700 mb-4'
+        to="/"
+        className="mb-4 flex items-center text-blue-500 hover:text-blue-700"
       >
-        <ArrowLeft size={20} className='mr-2' />
+        <ArrowLeft size={20} className="mr-2" />
         Back to list
       </Link>
       <form
         onSubmit={handleSubmit}
-        className='bg-slate-200 dark:bg-slate-800 shadow-md rounded px-8 pt-6 pb-8 mb-4'
+        className="mb-4 rounded bg-slate-200 px-8 pb-8 pt-6 shadow-md dark:bg-slate-800"
       >
-        <div className='mb-4'>
+        <div className="mb-4">
           <label
-            htmlFor='name'
-            className='block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2'
+            htmlFor="name"
+            className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300"
           >
             Bin Name
           </label>
           <input
-            type='text'
-            id='name'
+            type="text"
+            id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+            className="focus:shadow-outline w-full appearance-none rounded border bg-white px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none dark:bg-gray-700 dark:text-gray-300"
             required
           />
         </div>
-        <div className='mb-4'>
+        <div className="mb-4">
           <label
-            htmlFor='contents'
-            className='block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2'
+            htmlFor="contents"
+            className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300"
           >
             Contents
           </label>
           <input
-            type='text'
-            id='contents'
+            type="text"
+            id="contents"
             value={contents}
             onChange={(e) => setContents(e.target.value)}
-            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            required
+            className="focus:shadow-outline w-full appearance-none rounded border bg-white px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none dark:bg-gray-700 dark:text-gray-300"
           />
         </div>
-        <div className='mb-6'>
+        <div className="mb-6">
           <label
-            htmlFor='image'
-            className='block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2'
+            htmlFor="image"
+            className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300"
           >
             Images
           </label>
           <input
-            type='file'
-            id='image'
+            type="file"
+            id="image"
             multiple
             onChange={handleImageChange}
-            className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 leading-tight focus:outline-none focus:shadow-outline'
-            accept='image/*'
+            className="focus:shadow-outline w-full appearance-none rounded border bg-white px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none dark:bg-gray-700 dark:text-gray-300"
+            accept="image/*"
           />
         </div>
-        <div className='flex items-center justify-between'>
+        <div className="flex items-center justify-between">
           <button
-            type='submit'
-            className='bg-accent-color hover:bg-accent-color-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline'
+            type="submit"
+            className="focus:shadow-outline rounded bg-accent-color px-4 py-2 font-bold text-white hover:bg-accent-color-dark focus:outline-none"
           >
             Create Bin
           </button>

@@ -2,30 +2,48 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Tote } from "../types";
 import Image from "./Image";
+import { Plus } from "lucide-react";
 
 interface ToteListProps {
   totes: Tote[];
 }
 
 const ToteList: React.FC<ToteListProps> = ({ totes }) => {
+  if (totes.length === 0) {
+    return (
+      <div className="hero bg-base-200 min-h-screen">
+        <div className="hero-content text-center">
+          <div className="max-w-md">
+            <h1 className="text-5xl font-bold">Welcome to Binventory!</h1>
+            <p className="py-6">Get started by adding your first tote!</p>
+            <Link to="/add" className="btn btn-wide btn-primary">
+              <Plus className="mr-2 h-5 w-5" />
+              Add New Bin
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+    <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {totes.map((tote) => (
         <Link
           key={tote.id}
-          className='bg-slate-200 dark:bg-slate-800 rounded-lg shadow-md overflow-hidden cursor-pointer transition-transform duration-200 hover:scale-105'
+          className="cursor-pointer overflow-hidden rounded-lg bg-slate-200 shadow-md transition-transform duration-200 hover:scale-105 dark:bg-slate-800"
           to={`/tote/${tote.id}`}
         >
           <Image
-            imagePath={tote.images[0]}
+            imagePath={tote.images?.[0]}
             alt={tote.name}
-            className='w-full h-48 object-cover'
+            className="h-48 w-full object-cover"
           />
-          <div className='p-4'>
-            <h3 className='text-lg font-semibold mb-2 text-slate-900 dark:text-white'>
+          <div className="p-4">
+            <h3 className="mb-2 text-lg font-semibold text-slate-900 dark:text-white">
               {tote.name}
             </h3>
-            <p className='text-slate-500 dark:text-slate-400 truncate'>
+            <p className="truncate text-slate-500 dark:text-slate-400">
               {tote.contents}
             </p>
           </div>
