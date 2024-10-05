@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { ArrowLeft } from "lucide-react";
 import { useToteActions } from "../hooks/useTotes";
+import FormItem from "./FormItem";
+import TextInput from "./TextInput";
 
 interface ToteFormProps {}
 
@@ -28,71 +30,33 @@ const ToteForm: React.FC<ToteFormProps> = () => {
 
   return (
     <div className="mx-auto max-w-md">
-      <Link
-        to="/"
-        className="mb-4 flex items-center text-blue-500 hover:text-blue-700"
-      >
+      <Link to="/" className="text-primary mb-4 flex items-center">
         <ArrowLeft size={20} className="mr-2" />
         Back to list
       </Link>
+
       <form
         onSubmit={handleSubmit}
-        className="mb-4 rounded bg-slate-200 px-8 pb-8 pt-6 shadow-md dark:bg-slate-800"
+        className="bg-base-200 mt-4 rounded p-4 shadow-lg"
       >
-        <div className="mb-4">
-          <label
-            htmlFor="name"
-            className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300"
-          >
-            Bin Name
-          </label>
-          <input
-            type="text"
-            id="name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="focus:shadow-outline w-full appearance-none rounded border bg-white px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none dark:bg-gray-700 dark:text-gray-300"
-            required
-          />
-        </div>
-        <div className="mb-4">
-          <label
-            htmlFor="contents"
-            className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300"
-          >
-            Contents
-          </label>
-          <input
-            type="text"
-            id="contents"
-            value={contents}
-            onChange={(e) => setContents(e.target.value)}
-            className="focus:shadow-outline w-full appearance-none rounded border bg-white px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none dark:bg-gray-700 dark:text-gray-300"
-          />
-        </div>
-        <div className="mb-6">
-          <label
-            htmlFor="image"
-            className="mb-2 block text-sm font-bold text-gray-700 dark:text-gray-300"
-          >
-            Images
-          </label>
+        <FormItem labelText="Bin Name">
+          <TextInput value={name} onChange={setName} required />
+        </FormItem>
+        <FormItem labelText="Contents">
+          <TextInput value={contents} onChange={setContents} />
+        </FormItem>
+        <FormItem labelText="Cover Image">
           <input
             type="file"
             id="image"
-            multiple
             onChange={handleImageChange}
-            className="focus:shadow-outline w-full appearance-none rounded border bg-white px-3 py-2 leading-tight text-gray-700 shadow focus:outline-none dark:bg-gray-700 dark:text-gray-300"
+            className="file-input file-input-bordered w-full max-w-full"
             accept="image/*"
           />
-        </div>
-        <div className="flex items-center justify-between">
-          <button
-            type="submit"
-            className="focus:shadow-outline rounded bg-accent-color px-4 py-2 font-bold text-white hover:bg-accent-color-dark focus:outline-none"
-          >
-            Create Bin
-          </button>
+        </FormItem>
+
+        <div className="flex justify-end">
+          <button className="btn btn-primary my-4">Create Bin</button>
         </div>
       </form>
     </div>

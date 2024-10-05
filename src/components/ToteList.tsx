@@ -3,12 +3,14 @@ import { Link } from "react-router-dom";
 import { Tote } from "../types";
 import Image from "./Image";
 import { Plus } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 
 interface ToteListProps {
   totes: Tote[];
 }
 
 const ToteList: React.FC<ToteListProps> = ({ totes }) => {
+  const { user } = useAuth();
   if (totes.length === 0) {
     return (
       <div className="hero bg-base-200 min-h-screen">
@@ -16,10 +18,14 @@ const ToteList: React.FC<ToteListProps> = ({ totes }) => {
           <div className="max-w-md">
             <h1 className="text-5xl font-bold">Welcome to Binventory!</h1>
             <p className="py-6">Get started by adding your first tote!</p>
-            <Link to="/add" className="btn btn-wide btn-primary">
-              <Plus className="mr-2 h-5 w-5" />
-              Add New Bin
-            </Link>
+            {user ? (
+              <Link to="/add" className="btn btn-wide btn-primary">
+                <Plus className="mr-2 h-5 w-5" />
+                Add New Bin
+              </Link>
+            ) : (
+              "Sign in to get started!"
+            )}
           </div>
         </div>
       </div>

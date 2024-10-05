@@ -6,7 +6,7 @@ export default {
     require("@tailwindcss/typography"),
     require("daisyui"),
   ],
-  darkMode: ["selector", '[data-mode="dark"]'],
+  darkMode: ["selector", '[data-theme="dark"]'],
 
   daisyui: {
     themes: false, // false: only light + dark | true: all themes | array: specific themes like this ["light", "dark", "cupcake"]

@@ -2,16 +2,15 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   User,
   onAuthStateChanged,
-  signInWithPopup,
   signOut,
   signInWithRedirect,
+  signInWithPopup,
 } from "firebase/auth";
 import { auth, googleProvider } from "../firebase";
 
 interface AuthContextType {
   user: User | null;
   signIn: () => Promise<void>;
-  signInMobile: () => Promise<void>;
   signOut: () => Promise<void>;
 }
 
@@ -31,17 +30,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const signIn = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const signInMethod = import.meta.env.PROD
+        ? signInWithRedirect
+        : signInWithPopup;
+      await signInMethod(auth, googleProvider);
     } catch (error) {
       console.error("Error signing in with Google", error);
-    }
-  };
-
-  const signInMobile = async () => {
-    try {
-      await signInWithRedirect(auth, googleProvider);
-    } catch (error) {
-      console.error("Error signing in with Google");
     }
   };
 
@@ -54,9 +48,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   };
 
   return (
-    <AuthContext.Provider
-      value={{ user, signIn, signInMobile, signOut: signOutUser }}
-    >
+    <AuthContext.Provider value={{ user, signIn, signOut: signOutUser }}>
       {children}
     </AuthContext.Provider>
   );
