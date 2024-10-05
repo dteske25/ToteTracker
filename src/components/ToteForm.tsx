@@ -30,14 +30,14 @@ const ToteForm: React.FC<ToteFormProps> = () => {
 
   return (
     <div className="mx-auto max-w-md">
-      <Link to="/" className="text-primary mb-4 flex items-center">
+      <Link to="/" className="text-primary mb-4 ml-4 flex items-center">
         <ArrowLeft size={20} className="mr-2" />
         Back to list
       </Link>
 
       <form
         onSubmit={handleSubmit}
-        className="bg-base-200 mt-4 rounded p-4 shadow-lg"
+        className="bg-base-200 m-4 mt-4 rounded p-4 shadow-lg"
       >
         <FormItem labelText="Bin Name">
           <TextInput value={name} onChange={setName} required />
