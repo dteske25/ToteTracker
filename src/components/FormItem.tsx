@@ -5,6 +5,7 @@ interface IFormItemProps {
   labelAltText?: string;
   children: ReactNode;
   helpText?: string;
+  required?: boolean;
 }
 
 export default function FormItem({
@@ -16,12 +17,12 @@ export default function FormItem({
   return (
     <label className="form-control w-full max-w-full">
       <div className="label">
-        <span className="label-tex text-primaryt">{labelText}</span>
-        <span className="label-text-alt text-primary">{labelAltText}</span>
+        <span className="label-text">{labelText}</span>
+        <span className="label-text-alt">{labelAltText}</span>
       </div>
       {children}
-      <div className="label text-primary">
-        <span className="label-text-alt text-primary">{helpText}</span>
+      <div className="label">
+        <span className="label-text-alt">{helpText}</span>
       </div>
     </label>
   );

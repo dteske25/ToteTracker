@@ -16,12 +16,12 @@ const ToteList: React.FC<ToteListProps> = ({ totes }) => {
       <div className="hero min-h-screen bg-base-200">
         <div className="hero-content text-center">
           <div className="max-w-md">
-            <h1 className="text-5xl font-bold">Welcome to Binventory!</h1>
+            <h1 className="text-5xl font-bold">Welcome to ToteTracker!</h1>
             <p className="py-6">Get started by adding your first tote!</p>
             {user ? (
               <Link to="/add" className="btn btn-primary btn-wide">
                 <Plus className="mr-2 h-5 w-5" />
-                Add New Bin
+                Add New Tote
               </Link>
             ) : (
               "Sign in to get started!"

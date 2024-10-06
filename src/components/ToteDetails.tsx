@@ -103,7 +103,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
       <div className="m-4">
         <div className="mx-auto mt-4 max-w-6xl">
           <div className="flex justify-end gap-4">
-            <DeleteButton onClick={handleDeleteTote} label="Delete Bin" />
+            <DeleteButton onClick={handleDeleteTote} label="Delete Tote" />
             <button className="btn btn-primary" onClick={handleUpdateToteInfo}>
               <Save />
               Save
@@ -112,7 +112,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
           <FormItem labelText="Name">
             <TextInput value={nameInput} onChange={setNameInput} />
           </FormItem>
-          <FormItem labelText="Contents">
+          <FormItem labelText="Description">
             <TextInput value={contentsInput} onChange={setContentsInput} />
           </FormItem>
           <FormItem labelText="Add Images">
@@ -171,7 +171,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
       <Image
         imagePath={tote.coverImage}
         alt={tote.name}
-        className="h-64 w-full object-cover"
+        className="h-32 w-full object-cover md:h-64"
       />
       <div className="m-4">
         <div className="mx-auto mt-4 max-w-6xl">

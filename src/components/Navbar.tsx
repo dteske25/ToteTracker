@@ -1,26 +1,28 @@
 import { LogIn, LogOut, Package, Plus } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useMatch } from "react-router-dom";
 import Avatar from "./Avatar";
 import { useAuth } from "../context/AuthContext";
 import ThemeToggle from "./ThemeToggle";
 
 export default function Navbar() {
   const { user, signIn, signOut } = useAuth();
+  const match = useMatch("/add");
+  console.log(match);
   return (
     <div className="navbar bg-base-300">
       <div className="navbar-start">
         <Link to="/" className="btn btn-ghost">
           <div className="flex items-center space-x-2 text-primary">
             <Package className="text-accent-color h-8 w-8" />
-            <h1 className="text-3xl font-bold">Binventory</h1>
+            <h1 className="text-3xl font-bold">ToteTracker</h1>
           </div>
         </Link>
       </div>
-      {user && (
+      {user && !match && (
         <div className="navbar-center hidden md:block">
           <Link to="/add" className="btn btn-primary">
             <Plus className="mr-2 h-5 w-5" />
-            Add Bin
+            Add Tote
           </Link>
         </div>
       )}

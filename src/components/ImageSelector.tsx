@@ -24,6 +24,7 @@ const ImageSelector = forwardRef<IImageSelectorRef, IImageSelectorProps>(
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
       onChange(e.target.files);
+      setCameraMode(false);
     };
 
     const handleCameraMode = () => {
