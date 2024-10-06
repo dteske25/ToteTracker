@@ -1,4 +1,4 @@
-import { Camera } from "lucide-react";
+import { Camera, Images } from "lucide-react";
 import {
   ChangeEvent,
   forwardRef,
@@ -11,20 +11,29 @@ import { IImageSelectorRef } from "../types";
 
 interface IImageSelectorProps {
   multiple?: boolean;
-  onChange: (files: FileList | null) => void;
+  onChange: (files: FileList | null) => Promise<void>;
+  isLoading?: boolean;
 }
 
 const ImageSelector = forwardRef<IImageSelectorRef, IImageSelectorProps>(
   function ImageSelectorInternal(
-    { onChange, multiple }: IImageSelectorProps,
+    { onChange, multiple, isLoading }: IImageSelectorProps,
     ref,
   ) {
     const [cameraMode, setCameraMode] = useState(false);
     const imageInputRef = useRef<HTMLInputElement>(null);
 
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-      onChange(e.target.files);
+    const handleChange = async (e: ChangeEvent<HTMLInputElement>) => {
+      await onChange(e.target.files);
       setCameraMode(false);
+    };
+
+    const handleUploadMode = () => {
+      if (imageInputRef.current) {
+        imageInputRef.current.value = "";
+      }
+      // and then click it to trigger the phone camera
+      imageInputRef.current?.click();
     };
 
     const handleCameraMode = () => {
@@ -59,13 +68,34 @@ const ImageSelector = forwardRef<IImageSelectorRef, IImageSelectorProps>(
           type="file"
           id="image"
           onChange={(e) => handleChange(e)}
-          className="file-input file-input-bordered w-full max-w-full"
+          className="file-input file-input-bordered hidden w-full max-w-full"
           accept="image/*"
           multiple={multiple}
           capture={cameraMode}
         />
-        <button className="btn btn-accent" onClick={handleCameraMode}>
-          <Camera />
+        <button
+          className="btn btn-primary md:btn-wide"
+          onClick={handleUploadMode}
+          disabled={isLoading}
+        >
+          {isLoading && !cameraMode ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            <Images />
+          )}
+          Choose from gallery
+        </button>
+        <button
+          className="btn btn-accent md:btn-wide"
+          onClick={handleCameraMode}
+          disabled={isLoading}
+        >
+          {isLoading && cameraMode ? (
+            <span className="loading loading-spinner"></span>
+          ) : (
+            <Camera />
+          )}
+          Take new photo
         </button>
       </>
     );

@@ -1,6 +1,13 @@
 import React, { useRef, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Pencil, Save, Trash2, UploadCloud } from "lucide-react";
+import {
+  ArrowLeft,
+  CornerLeftUp,
+  CornerRightUp,
+  Pencil,
+  Save,
+  Trash2,
+} from "lucide-react";
 import Image from "./Image";
 import { useTote, useToteActions } from "../hooks/useTotes";
 import FormItem from "./FormItem";
@@ -16,8 +23,7 @@ interface IDeleteButtonProps {
 }
 function DeleteButton({ onClick, label }: IDeleteButtonProps) {
   const handleClick = () => {
-    const result = confirm("Are you sure?");
-    console.log(result);
+    const result = confirm("Are you sure you want to delete this?");
     if (result) {
       onClick();
     }
@@ -46,8 +52,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
   const [editMode, setEditMode] = useState(false);
   const [nameInput, setNameInput] = useState("");
   const [contentsInput, setContentsInput] = useState("");
-  const [imageInput, setImageInput] = useState<FileList | null>();
-  const [uploadingImages, setUploadingImages] = useState(false);
+  const [isUploadingImages, setUploadingImages] = useState(false);
 
   const handleDeleteTote = async () => {
     if (!tote) return;
@@ -60,14 +65,13 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
     await removeImageFromTote(tote?.id, imagePath);
   };
 
-  const handleUploadMoreImages = async () => {
-    if (!imageInput || !tote) return;
+  const handleUploadMoreImages = async (files: FileList | null) => {
+    if (!files || !tote) return;
     setUploadingImages(true);
     try {
-      for (const image of imageInput) {
+      for (const image of files) {
         await addImageToTote(tote.id, image);
       }
-      setImageInput(null);
       if (imageInputRef.current) {
         imageInputRef.current.clearImageFileInput();
       }
@@ -85,7 +89,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
 
   const handleUpdateToteInfo = async () => {
     if (!tote) return;
-    updateToteInfo({ ...tote, name: nameInput, contents: contentsInput });
+    updateToteInfo(tote.id, nameInput, contentsInput);
     setEditMode(false);
   };
 
@@ -97,6 +101,27 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
   if (!tote) {
     return <div>Tote not found</div>;
   }
+
+  const imageUploader = (
+    <>
+      <div className="divider"></div>
+      <div className="flex justify-center gap-4">
+        <ImageSelector
+          ref={imageInputRef}
+          onChange={handleUploadMoreImages}
+          isLoading={isUploadingImages}
+          multiple
+        />
+      </div>
+      {(tote.images?.length ?? 0) === 0 && (
+        <div className="mt-4 flex items-center justify-center">
+          <CornerLeftUp />
+          <p className="mx-2 text-3xl">Add photos to get started!</p>
+          <CornerRightUp />
+        </div>
+      )}
+    </>
+  );
 
   if (editMode) {
     return (
@@ -115,22 +140,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
           <FormItem labelText="Description">
             <TextInput value={contentsInput} onChange={setContentsInput} />
           </FormItem>
-          <FormItem labelText="Add Images">
-            <div className="flex gap-4">
-              <ImageSelector ref={imageInputRef} onChange={setImageInput} />
-              <button
-                className="btn btn-primary"
-                onClick={handleUploadMoreImages}
-                disabled={!imageInput || uploadingImages}
-              >
-                {uploadingImages && (
-                  <span className="loading loading-spinner loading-xs"></span>
-                )}
-                <UploadCloud />
-                Upload
-              </button>
-            </div>
-          </FormItem>
+          {imageUploader}
           <div className="mx-auto mt-8">
             <div className="columns-1 gap-4 md:columns-2">
               {tote.images?.map((image, i) => (
@@ -187,8 +197,10 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
             <div className="">
               <div className="flex justify-between">
                 <div>
-                  <div className="my-2 text-3xl font-bold">{tote.name}</div>
-                  <div className="my-2">{tote.contents}</div>
+                  <div className="my-2 text-5xl">{tote.name}</div>
+                  <div className="my-2 text-3xl font-light">
+                    {tote.contents}
+                  </div>
                 </div>
                 <div className="flex justify-center gap-2">
                   <button
@@ -200,7 +212,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
                 </div>
               </div>
             </div>
-
+            {imageUploader}
             <div className="mx-auto mt-8">
               <div className="columns-1 gap-4 md:columns-2">
                 {tote.images?.map((image, i) => (

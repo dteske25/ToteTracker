@@ -7,7 +7,6 @@ import ThemeToggle from "./ThemeToggle";
 export default function Navbar() {
   const { user, signIn, signOut } = useAuth();
   const match = useMatch("/add");
-  console.log(match);
   return (
     <div className="navbar bg-base-300">
       <div className="navbar-start">
@@ -20,7 +19,7 @@ export default function Navbar() {
       </div>
       {user && !match && (
         <div className="navbar-center hidden md:block">
-          <Link to="/add" className="btn btn-primary">
+          <Link to="/add" className="btn btn-ghost">
             <Plus className="mr-2 h-5 w-5" />
             Add Tote
           </Link>
@@ -29,7 +28,7 @@ export default function Navbar() {
       <div className="navbar-end">
         {user && (
           <div className="mx-4 md:hidden">
-            <Link to="/add" className="btn btn-primary">
+            <Link to="/add" className="btn btn-ghost">
               <Plus className="h-5 w-5" />
             </Link>
           </div>

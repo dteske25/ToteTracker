@@ -117,6 +117,7 @@ export const useToteActions = () => {
   const removeImageFromTote = async (toteId: string, imagePath: string) => {
     const { tote, ref } = await internal_getTote(toteId);
     await updateDoc(ref, {
+      coverImage: tote.coverImage === imagePath ? null : tote.coverImage,
       images: tote.images?.filter((i) => i !== imagePath),
     });
     await internal_removeToteImage(imagePath);
@@ -129,12 +130,15 @@ export const useToteActions = () => {
     });
   };
 
-  const updateToteInfo = async (newTote: Tote) => {
-    const { ref } = await internal_getTote(newTote.id);
+  const updateToteInfo = async (
+    toteId: string,
+    name: string,
+    contents: string,
+  ) => {
+    const { ref } = await internal_getTote(toteId);
     await updateDoc(ref, {
-      name: newTote.name,
-      contents: newTote.contents,
-      coverImage: newTote.coverImage,
+      name,
+      contents,
     });
   };
 
