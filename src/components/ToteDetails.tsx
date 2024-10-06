@@ -108,68 +108,70 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
   if (editMode) {
     return (
       <div className="m-4">
-        <div className="flex justify-end gap-4">
-          <DeleteButton onClick={handleDeleteTote} label="Delete Bin" />
-          <button className="btn btn-primary" onClick={handleUpdateToteInfo}>
-            <Save />
-            Save
-          </button>
-        </div>
-        <FormItem labelText="Name">
-          <TextInput value={nameInput} onChange={setNameInput} />
-        </FormItem>
-        <FormItem labelText="Contents">
-          <TextInput value={contentsInput} onChange={setContentsInput} />
-        </FormItem>
-        <FormItem labelText="Add Images">
-          <div className="flex gap-4">
-            <input
-              ref={imageInputRef}
-              type="file"
-              id="image"
-              onChange={handleFileInputChange}
-              className="file-input file-input-bordered w-full max-w-full"
-              accept="image/*"
-              multiple
-            />
-            <button
-              className="btn btn-primary"
-              onClick={handleUploadMoreImages}
-              disabled={!imageInput}
-            >
-              <UploadCloud />
-              Upload
+        <div className="mx-auto mt-4 max-w-6xl">
+          <div className="flex justify-end gap-4">
+            <DeleteButton onClick={handleDeleteTote} label="Delete Bin" />
+            <button className="btn btn-primary" onClick={handleUpdateToteInfo}>
+              <Save />
+              Save
             </button>
           </div>
-        </FormItem>
-        <div className="mx-auto mt-8">
-          <div className="columns-1 gap-4 md:columns-2">
-            {tote.images?.map((image, i) => (
-              <div key={i} className="relative pt-4">
-                <Image
-                  imagePath={image}
-                  alt={`additional-image-${i}`}
-                  className="max-w-full rounded-lg"
-                />
-                <div className="absolute left-4 top-8">
-                  <DeleteButton
-                    onClick={() => {
-                      handleDeleteImage(image);
-                    }}
+          <FormItem labelText="Name">
+            <TextInput value={nameInput} onChange={setNameInput} />
+          </FormItem>
+          <FormItem labelText="Contents">
+            <TextInput value={contentsInput} onChange={setContentsInput} />
+          </FormItem>
+          <FormItem labelText="Add Images">
+            <div className="flex gap-4">
+              <input
+                ref={imageInputRef}
+                type="file"
+                id="image"
+                onChange={handleFileInputChange}
+                className="file-input file-input-bordered w-full max-w-full"
+                accept="image/*"
+                multiple
+              />
+              <button
+                className="btn btn-primary"
+                onClick={handleUploadMoreImages}
+                disabled={!imageInput}
+              >
+                <UploadCloud />
+                Upload
+              </button>
+            </div>
+          </FormItem>
+          <div className="mx-auto mt-8">
+            <div className="columns-1 gap-4 md:columns-2">
+              {tote.images?.map((image, i) => (
+                <div key={i} className="relative pt-4">
+                  <Image
+                    imagePath={image}
+                    alt={`additional-image-${i}`}
+                    className="max-w-full rounded-lg"
                   />
+                  <div className="absolute left-4 top-8">
+                    <DeleteButton
+                      onClick={() => {
+                        handleDeleteImage(image);
+                      }}
+                    />
+                  </div>
+                  <div className="absolute right-4 top-8">
+                    {tote.coverImage !== image && (
+                      <button
+                        className="btn btn-accent"
+                        onClick={() => handleMakeCoverPhoto(image)}
+                      >
+                        Make Cover Photo
+                      </button>
+                    )}
+                  </div>
                 </div>
-                <div className="absolute right-4 top-8">
-                  {tote.coverImage !== image && (
-                    <button
-                      className="btn btn-accent"
-                      onClick={() => handleMakeCoverPhoto(image)}
-                    >
-                      Make Cover Photo
-                    </button>
-                  )}
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </div>
