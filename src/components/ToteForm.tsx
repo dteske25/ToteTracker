@@ -64,6 +64,7 @@ const ToteForm: React.FC<ToteFormProps> = () => {
                 onChange={handleImageChange}
                 className="file-input file-input-bordered w-full max-w-full"
                 accept="image/*"
+                capture
               />
             </FormItem>
             <div className="card-actions justify-end">

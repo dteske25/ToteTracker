@@ -132,6 +132,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
                 className="file-input file-input-bordered w-full max-w-full"
                 accept="image/*"
                 multiple
+                capture
               />
               <button
                 className="btn btn-primary"
