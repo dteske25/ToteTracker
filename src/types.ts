@@ -6,3 +6,7 @@ export interface Tote {
   coverImage?: string;
   userId: string;
 }
+
+export interface IImageSelectorRef {
+  clearImageFileInput: () => void;
+}

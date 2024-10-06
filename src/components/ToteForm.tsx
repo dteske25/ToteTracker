@@ -4,6 +4,7 @@ import { ArrowLeft } from "lucide-react";
 import { useToteActions } from "../hooks/useTotes";
 import FormItem from "./FormItem";
 import TextInput from "./TextInput";
+import ImageSelector from "./ImageSelector";
 
 interface ToteFormProps {}
 
@@ -28,15 +29,9 @@ const ToteForm: React.FC<ToteFormProps> = () => {
     }
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      setImage(e.target.files[0]);
-    }
-  };
-
   return (
     <div className="m-4">
-      <div className="mx-auto max-w-md">
+      <div className="mx-auto max-w-2xl">
         <Link
           to="/"
           className="link-hover link link-primary mb-4 flex items-center"
@@ -47,7 +42,7 @@ const ToteForm: React.FC<ToteFormProps> = () => {
 
         <form
           onSubmit={handleSubmit}
-          className="card mt-4 w-96 rounded bg-base-200 shadow-xl"
+          className="card mt-4 rounded bg-base-200 shadow-xl"
         >
           <div className="card-body">
             <div className="card-title">Create Bin</div>
@@ -58,14 +53,11 @@ const ToteForm: React.FC<ToteFormProps> = () => {
               <TextInput value={contents} onChange={setContents} />
             </FormItem>
             <FormItem labelText="Cover Image">
-              <input
-                type="file"
-                id="image"
-                onChange={handleImageChange}
-                className="file-input file-input-bordered w-full max-w-full"
-                accept="image/*"
-                capture
-              />
+              <div className="flex gap-4">
+                <ImageSelector
+                  onChange={(files) => setImage(files?.[0] ?? null)}
+                />
+              </div>
             </FormItem>
             <div className="card-actions justify-end">
               <button className="btn btn-primary" disabled={isLoading}>

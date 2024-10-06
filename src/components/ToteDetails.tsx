@@ -5,6 +5,8 @@ import Image from "./Image";
 import { useTote, useToteActions } from "../hooks/useTotes";
 import FormItem from "./FormItem";
 import TextInput from "./TextInput";
+import ImageSelector from "./ImageSelector";
+import { IImageSelectorRef } from "../types";
 
 interface ToteDetailsProps {}
 
@@ -30,7 +32,7 @@ function DeleteButton({ onClick, label }: IDeleteButtonProps) {
 }
 
 const ToteDetails: React.FC<ToteDetailsProps> = () => {
-  const imageInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<IImageSelectorRef>(null);
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
   const { tote } = useTote(id);
@@ -45,6 +47,7 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
   const [nameInput, setNameInput] = useState("");
   const [contentsInput, setContentsInput] = useState("");
   const [imageInput, setImageInput] = useState<FileList | null>();
+  const [uploadingImages, setUploadingImages] = useState(false);
 
   const handleDeleteTote = async () => {
     if (!tote) return;
@@ -57,18 +60,19 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
     await removeImageFromTote(tote?.id, imagePath);
   };
 
-  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setImageInput(e.target.files);
-  };
-
   const handleUploadMoreImages = async () => {
     if (!imageInput || !tote) return;
-    for (const image of imageInput) {
-      await addImageToTote(tote.id, image);
-    }
-    setImageInput(null);
-    if (imageInputRef.current) {
-      imageInputRef.current.value = "";
+    setUploadingImages(true);
+    try {
+      for (const image of imageInput) {
+        await addImageToTote(tote.id, image);
+      }
+      setImageInput(null);
+      if (imageInputRef.current) {
+        imageInputRef.current.clearImageFileInput();
+      }
+    } finally {
+      setUploadingImages(false);
     }
   };
 
@@ -94,17 +98,6 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
     return <div>Tote not found</div>;
   }
 
-  const columns = 2;
-  const chunkedImages: string[][] = [];
-  for (let i = 0; i < columns; i++) {
-    chunkedImages.push([]);
-  }
-
-  const toteImages = tote.images ?? [];
-  for (let i = 0; i < toteImages.length; i++) {
-    chunkedImages[i % columns].push(toteImages[i]);
-  }
-
   if (editMode) {
     return (
       <div className="m-4">
@@ -124,21 +117,15 @@ const ToteDetails: React.FC<ToteDetailsProps> = () => {
           </FormItem>
           <FormItem labelText="Add Images">
             <div className="flex gap-4">
-              <input
-                ref={imageInputRef}
-                type="file"
-                id="image"
-                onChange={handleFileInputChange}
-                className="file-input file-input-bordered w-full max-w-full"
-                accept="image/*"
-                multiple
-                capture
-              />
+              <ImageSelector ref={imageInputRef} onChange={setImageInput} />
               <button
                 className="btn btn-primary"
                 onClick={handleUploadMoreImages}
-                disabled={!imageInput}
+                disabled={!imageInput || uploadingImages}
               >
+                {uploadingImages && (
+                  <span className="loading loading-spinner loading-xs"></span>
+                )}
                 <UploadCloud />
                 Upload
               </button>
