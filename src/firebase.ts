@@ -5,7 +5,9 @@ import { getStorage } from "firebase/storage";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAZ1XngZde0bae-4Zz8ECL2pnb5SaF_tdI",
-  authDomain: "tote-tracker.dteske.dev",
+  authDomain: import.meta.env.DEV
+    ? "localhost:5173"
+    : "tote-tracker.dteske.dev",
   projectId: "inventory-tracker-434102",
   storageBucket: "inventory-tracker-434102.appspot.com",
   messagingSenderId: "293327244485",

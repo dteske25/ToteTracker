@@ -16,7 +16,7 @@ function AppContent() {
         <Route path="/" element={<Layout />}>
           <Route index element={<ToteList totes={totes} />} />
           <Route path="/add" element={<ToteForm />} />
-          <Route path="/tote/:id" element={<ToteDetails totes={totes} />} />
+          <Route path="/tote/:id" element={<ToteDetails />} />
         </Route>
       </Routes>
     </BrowserRouter>
